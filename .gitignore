@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# data
+
+square_lattice_data/
+square_lattice_data/*
+square_lattice_regenerated.zip
