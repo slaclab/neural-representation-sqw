@@ -133,3 +133,5 @@ dmypy.json
 square_lattice_data/
 square_lattice_data/*
 square_lattice_regenerated.zip
+data_as_np/
+data_as_np/*
