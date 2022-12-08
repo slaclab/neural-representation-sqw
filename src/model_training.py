@@ -1,27 +1,9 @@
 import numpy as np 
 from matplotlib import pyplot as plt
 import tensorflow as tf 
-from tensorflow.keras import layers, utils
 from tqdm import tqdm
 import argparse
-
-def siren_model(n_neurons=128,n_layers=3):
-    model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Dense(n_neurons, input_shape=(6,), activation=tf.math.sin))
-    for i in range(n_layers):
-        model.add(tf.keras.layers.Dense(n_neurons, activation=tf.math.sin))
-    model.add(tf.keras.layers.Dense(1, activation='relu'))
-    model.compile(loss='mse', optimizer='Adam')
-    return model
-
-def log_1px_transform(x):
-    return np.log(1+x)
-
-def scheduler(epoch, lr):
-    if epoch < 10:
-        return lr
-    else:
-        return lr * tf.math.exp(-0.1)
+from utils import *
 
 if __name__ == "__main__":
     
@@ -36,6 +18,8 @@ if __name__ == "__main__":
     argparser.add_argument('--model_path', type=str, default='src/paper_data_code/siren_model', help='filename for trained model')
         
     args = argparser.parse_args()
+    
+    # Load training dataset
     data = np.load(args.data_path)
 
     X_train = data['train_x']
@@ -49,18 +33,11 @@ if __name__ == "__main__":
     print(" -------------------------------- Dataset loaded -------------------------------- ")
     
     lr_schedule = tf.keras.callbacks.LearningRateScheduler(scheduler)
-
-    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint( filepath=args.model_path, 
-                                                                    save_weights_only=False,
-                                                                    monitor='val_loss',
-                                                                    mode='min',
-                                                                    save_best_only=True)
-    
-    
-    
-    model = siren_model(n_neurons=args.n_neurons, n_layers=args.n_layers)
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=args.model_path, save_weights_only=False, monitor='val_loss', mode='min', save_best_only=True)
     optimizer = tf.keras.optimizers.Adam(learning_rate=args.lr)
     loss = tf.keras.losses.MeanSquaredError()
+    
+    model = siren_model(n_neurons=args.n_neurons, n_layers=args.n_layers)
     model.compile(optimizer, loss=loss)
     print(model.summary())
     
