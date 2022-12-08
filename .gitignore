@@ -131,5 +131,4 @@ dmypy.json
 # data
 src/train_forward_model_hexagonal.ipynb
 src/paper_data_code/
-data_experimental/
 data_simulated/
