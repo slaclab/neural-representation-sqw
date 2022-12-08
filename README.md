@@ -14,7 +14,6 @@ This repository contains the trained models from the paper ...
 **notebooks** 
 
 **models** 
----
 
 ## Installation
 
