@@ -129,9 +129,7 @@ dmypy.json
 .pyre/
 
 # data
-
-square_lattice_data/
-square_lattice_data/*
-square_lattice_regenerated.zip
-data_as_np/
-data_as_np/*
+src/train_forward_model_hexagonal.ipynb
+src/paper_data_code/
+data_experimental/
+data_simulated/
