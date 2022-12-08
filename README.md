@@ -1,6 +1,6 @@
 # Implicit Neural Representation for the dynamical structure factor ... 
 
-<img width="500" alt="Screen Shot 2022-12-08 at 2 30 37 PM" src="https://user-images.githubusercontent.com/39596225/206580987-a0564416-bad6-4240-9337-3118c0497213.png">
+<img width="500" alt="Screen Shot 2022-12-08 at 2 37 50 PM" src="https://user-images.githubusercontent.com/39596225/206581922-6fd39c22-79bf-417a-a94d-5eec1a705731.png">
 
 This repository contains the trained models from the paper ... 
 
