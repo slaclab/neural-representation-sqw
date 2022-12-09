@@ -144,7 +144,7 @@ def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size =
 
     j1 = tf.Variable(tf.random.uniform(shape=[1],minval=-0.5,maxval=0.5), constraint=lambda t: tf.clip_by_value(t, -0.5, 0.5))
     j2 = tf.Variable(tf.random.uniform(shape=[1],minval=0.0,maxval=1.5), constraint=lambda t: tf.clip_by_value(t, 0.0, 1.5))
-
+    
     for i in range(max_iter):
 
         ones_vector = tf.ones(test_x.shape[0])
@@ -169,7 +169,8 @@ def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size =
 
         gradients = tape.gradient(loss, [j1, j2])
         opt.apply_gradients(zip(gradients, [j1, j2]))
-
+        
+        
         metrics.append([float(loss), float(j1), float(j2)])
 
     metrics = np.array(metrics)
