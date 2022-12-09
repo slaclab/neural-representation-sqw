@@ -104,6 +104,37 @@ def image_to_coords(c_q, c_E, c_sqw, background_start=150,background_end=160):
 
     return test_x, test_y
 
+def calculate_loss_landscape(test_x, test_y, gridsize = 50):
+    
+    ones_vector = tf.ones(test_x.shape[0])
+
+    loss_vals = []
+
+    # Define a uniform grid to evaluate loss function
+    j1 = np.linspace(-0.5, 0.5, gridsize)
+    j2 = np.linspace(0.0, 1.5, gridsize)
+    
+    j1j1, j2j2 = np.meshgrid(j1,j2)
+    j1_all = np.ravel(j1j1)
+    j2_all = np.ravel(j2j2)
+
+    for i in tqdm(range(len(j1_all))):
+        j1 = j1_all[i]
+        j2 = j2_all[i]
+
+        j1_vector = tf.expand_dims(j1 * ones_vector,axis=-1)
+        j2_vector = tf.expand_dims(j2 * ones_vector,axis=-1)
+
+        x_in = tf.concat((test_x, j1_vector, j2_vector),axis=1)
+        y_pred = model.predict(x_in)
+
+        loss = correlation_loss(test_y, y_pred)
+        loss_vals.append([j1_all[i], j2_all[i], float(loss)])
+
+    loss_vals = np.array(loss_vals)
+    
+    return loss_vals
+
 def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size = 2048, max_iter=2000, plotting = True):
     loss_vals = [] 
     metrics = [] 
@@ -114,7 +145,7 @@ def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size =
     j1 = tf.Variable(tf.random.uniform(shape=[1],minval=-0.5,maxval=0.5), constraint=lambda t: tf.clip_by_value(t, -0.5, 0.5))
     j2 = tf.Variable(tf.random.uniform(shape=[1],minval=0.0,maxval=1.5), constraint=lambda t: tf.clip_by_value(t, 0.0, 1.5))
 
-    for i in tqdm(range(max_iter)):
+    for i in range(max_iter):
 
         ones_vector = tf.ones(test_x.shape[0])
 
