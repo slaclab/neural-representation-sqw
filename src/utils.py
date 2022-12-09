@@ -7,6 +7,11 @@ from scipy.signal import savgol_filter
 from tqdm import tqdm 
 from matplotlib import pyplot as plt 
 
+def weighted_variance(x, w):
+    
+    x_mean = np.mean(x)
+    return np.sum(w * ((x - x_mean)**2))/np.sum(w)
+    
 def path2mesh_expt(j1, j2, c_q, c_E, model):
                    
     mesh = [] 
@@ -33,29 +38,29 @@ def generate_background(c_sqw, start, end):
     BKG = (np.expand_dims(yhat,axis=-1) * np.expand_dims(np.ones(c_sqw.shape[0]),axis=0)).T
     return BKG
 
+# code found @ https://stackoverflow.com/questions/65445326/confusion-with-custom-loss-for-tensorflow-keras
 def correlation_loss(y_true, y_pred):
-    y_true_flat = layers.Flatten(name="Y_TRUE_FLAT")(y_true)
-    y_pred_flat = layers.Flatten(name="Y_PRED_FLAT")(y_pred)
-    cov =  tfp.stats.covariance(y_true_flat, y_pred_flat, sample_axis=0, event_axis=None, name="COVARIANCE")
-    std_y_trueR = tfp.stats.stddev(y_true_flat, sample_axis=0, keepdims=False, name="LOSS_STD_TRUE")
-    std_y_predR = tfp.stats.stddev(y_pred_flat, sample_axis=0, keepdims=False, name="LOSS_STD_PRED")
-    corr = tf.math.divide(cov,tf.math.multiply(std_y_trueR,std_y_predR, name="MULT_STDs"), name="CORRELATION")
-    loss = tf.math.subtract(1.0,corr[0], name="CORR_LOSS")
+    y_true_flat = layers.Flatten()(y_true)
+    y_pred_flat = layers.Flatten()(y_pred)
+    cov =  tfp.stats.covariance(y_true_flat, y_pred_flat, sample_axis=0, event_axis=None)
+    std_y_trueR = tfp.stats.stddev(y_true_flat, sample_axis=0, keepdims=False)
+    std_y_predR = tfp.stats.stddev(y_pred_flat, sample_axis=0, keepdims=False)
+    corr = tf.math.divide(cov,tf.math.multiply(std_y_trueR,std_y_predR))
+    loss = tf.math.subtract(1.0,corr[0])
     return loss
 
 def rejection_sampling(c_sqw, n_samples = 25000, filter_size=3):
-    
-    np.random.seed(47)
-    
-    Gaussian = cv2.GaussianBlur(c_sqw.T, (filter_size, filter_size), 0)    
-    Z = np.sum(Gaussian)
-    p_true = Gaussian/Z
+        
+    c_sqw_gaussian = cv2.GaussianBlur(c_sqw.T, (filter_size, filter_size), 0)    
+    Z = np.sum(c_sqw_gaussian)
+    p_true = c_sqw_gaussian/Z
     
     uniform_discrete = np.ones(c_sqw.T.shape)
     uniform_discrete = uniform_discrete/np.sum(uniform_discrete)
     
     C = np.max(p_true)/np.max(uniform_discrete)
     sampled = np.zeros(c_sqw.T.shape)
+    
     for i in range(n_samples):
         idx = np.random.randint(p_true.shape)
         u = np.random.rand()
@@ -104,7 +109,7 @@ def image_to_coords(c_q, c_E, c_sqw, background_start=150,background_end=160):
 
     return test_x, test_y
 
-def calculate_loss_landscape(test_x, test_y, gridsize = 50):
+def calculate_loss_landscape(test_x, test_y, model, gridsize = 50):
     
     ones_vector = tf.ones(test_x.shape[0])
 
