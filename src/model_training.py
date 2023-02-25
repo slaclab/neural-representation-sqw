@@ -7,15 +7,15 @@ from utils import *
 
 if __name__ == "__main__":
     
-    argparser = argparse.ArgumentParser(description='Process hyper-parameters')
+    argparser = argparse.ArgumentParser(description='Train ML model with specific hparams')
 
     argparser.add_argument('--lr', type=float, default=1e-3, help='training rate')
     argparser.add_argument('--n_layers',  type=int, default=4,   help='number of siren layers')
     argparser.add_argument('--n_neurons',  type=int, default=64,   help='number of neurons')   
     argparser.add_argument('--batch_size',  type=int, default=1024,   help='batch size')
-    argparser.add_argument('--epochs',  type=int, default=25,   help='number of epochs')   
-    argparser.add_argument('--data_path', type=str, default='src/paper_data_code/neural_quantum_data2.npz', help='data directory for training')
-    argparser.add_argument('--model_path', type=str, default='src/paper_data_code/siren_model', help='filename for trained model')
+    argparser.add_argument('--epochs',  type=int, default=30,   help='number of epochs')   
+    argparser.add_argument('--data_path', type=str, default='src/training_data/siren_training_data.npz', help='data directory for training')
+    argparser.add_argument('--model_path', type=str, default='surrogate_model', help='filename for trained model')
         
     args = argparser.parse_args()
     
@@ -50,6 +50,12 @@ if __name__ == "__main__":
                         batch_size=args.batch_size, 
                         epochs=args.epochs, 
                         callbacks=[lr_schedule, model_checkpoint_callback])
+    
+    np.save(args.model_path + "_training_loss", history.history['loss'])
+    np.save(args.model_path + "_validation_loss", history.history['val_loss'])
+    
+    model.save(args.model_path)
+
     
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])

@@ -32,6 +32,19 @@ def path2mesh_expt(j1, j2, c_q, c_E, model):
 
     return y_img 
 
+def path2mesh(path):
+    mesh = [] 
+
+    c_q = np.array(pd.read_csv(os.path.join(path, 'Klist_' + str(k) + '.csv'), header=None)).T
+    c_E = np.array(pd.read_csv(os.path.join(path, 'Elist_' + str(k) + '.csv'), header=None)).T
+    c_sqw = np.array(pd.read_csv(os.path.join(path, 'Sqw_withBroadening_' + str(k) + '.csv'), header=None)).T
+
+    for j in range(c_sqw.shape[1]):
+        for i in range(c_sqw.shape[0]):
+            mesh.append([c_q[i][0], c_q[i][1], c_q[i][2], float(c_E[j])/200])
+            
+    return mesh 
+
 def generate_background(c_sqw, start, end):
     bkg = np.mean(c_sqw.T[:,start:end],axis=1)
     yhat = savgol_filter(bkg, 51, 3) # window size 51, polynomial order 3
@@ -77,8 +90,8 @@ def siren_model(n_neurons=128,n_layers=3):
     model.add(tf.keras.layers.Dense(n_neurons, input_shape=(6,), activation=tf.math.sin))
     for i in range(n_layers):
         model.add(tf.keras.layers.Dense(n_neurons, activation=tf.math.sin))
-    model.add(tf.keras.layers.Dense(1, activation='relu'))
-    model.compile(loss='mse', optimizer='Adam')
+    model.add(tf.keras.layers.Dense(1, activation='linear'))
+    #model.compile(loss='mse', optimizer='Adam')
     return model
 
 def log_1px_transform(x):
@@ -90,7 +103,43 @@ def scheduler(epoch, lr):
     else:
         return lr * tf.math.exp(-0.1)
     
+def convert_low_count_data_to_coordinates(c_q, c_E, c_sqw):
+    test_x = []
+    test_y = []
     
+    for j in range(c_sqw.shape[1]):
+        for i in range(c_sqw.shape[0]):
+            test_x.append([c_q[i][0], c_q[i][1], c_q[i][2], float(c_E[j])/200])
+            test_y.append(c_sqw[i,j])
+    test_x = np.array(test_x) 
+    test_y = np.array(test_y)
+    
+    return test_x, test_y 
+
+def make_low_count_data(Q_path, E_path, SQw_path, bg_region, rejection_samples_list=[5000, 10000, 25000, 50000, 75000, 100000, 115000, 250000, 350000, 500000, 750000, 1000000,1500000, 2000000,5000000]):
+    
+    low_count_data_woBG = [] 
+    low_count_data = [] 
+    
+    c_q = np.array(pd.read_csv(Q_path, header=None)).T
+    c_E = np.array(pd.read_csv(E_path, header=None)[0]).T
+    c_sqw = np.array(pd.read_csv(SQw_path, header=None)).T
+        
+    for n_samples in tqdm(rejection_samples_list):
+        
+        # Sample from Sqw 
+        c_sqw_rs = rejection_sampling(c_sqw, n_samples=n_samples).T
+
+        low_count_data.append(c_sqw_rs)
+        
+        # Perform background subtraction 
+        diff = generate_background(c_sqw_rs, bg_region[0], bg_region[1])
+        c_sqw_rs_woBG = (c_sqw_rs.T - diff.T).T
+        
+        low_count_data_woBG.append(c_sqw_rs_woBG)
+    
+    return np.array(low_count_data_woBG), np.array(low_count_data)
+
 def image_to_coords(c_q, c_E, c_sqw, background_start=150,background_end=160):
     
     test_x = []
@@ -140,15 +189,24 @@ def calculate_loss_landscape(test_x, test_y, model, gridsize = 50):
     
     return loss_vals
 
-def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size = 2048, max_iter=2000, plotting = True):
+def optimize_surrogate(test_x, test_y, model, learning_rate = 0.01, batch_size = 2048, max_iter=2000, plotting = True, fixed_start=False, set_seed=False):
+    
+    if set_seed:
+        np.random.seed(47)
+        tf.random.set_seed(47)
+        
     loss_vals = [] 
     metrics = [] 
     
     # Adam optimizer 
     opt = tf.optimizers.Adam(learning_rate)
-
-    j1 = tf.Variable(tf.random.uniform(shape=[1],minval=-0.5,maxval=0.5), constraint=lambda t: tf.clip_by_value(t, -0.5, 0.5))
-    j2 = tf.Variable(tf.random.uniform(shape=[1],minval=0.0,maxval=1.5), constraint=lambda t: tf.clip_by_value(t, 0.0, 1.5))
+    
+    if fixed_start:
+        j1 = tf.Variable(0.0, constraint=lambda t: tf.clip_by_value(t, -0.5, 0.5))
+        j2 = tf.Variable(0.75, constraint=lambda t: tf.clip_by_value(t, 0.0, 1.5))
+    else:
+        j1 = tf.Variable(tf.random.uniform(shape=[1],minval=-0.5,maxval=0.5), constraint=lambda t: tf.clip_by_value(t, -0.5, 0.5))
+        j2 = tf.Variable(tf.random.uniform(shape=[1],minval=0.0,maxval=1.5), constraint=lambda t: tf.clip_by_value(t, 0.0, 1.5))
     
     for i in range(max_iter):
 
