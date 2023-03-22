@@ -25,7 +25,13 @@ pip install -r requirements.txt
 
 ## Directory Structure 
 
-**data** 
+**data_experimental** 
+
+This directory contains experiment S(q,w) measurements for both paths reported in the manuscript (with and without background subtraction). It also contains the accompanying energy and momentum coordinates.
+
+**data_simulation_2023** 
+
+Due to the size of the simulation dataset, it is not possible to inclue it directly on GitHub. Please download the simulation data which is publicly available at ... zenodo ... 
 
 **notebooks** 
 
