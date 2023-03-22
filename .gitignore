@@ -1,3 +1,7 @@
+data_simulation_2023/
+converted_simulation_data_2023/
+neural_representation_env/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
