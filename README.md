@@ -5,15 +5,11 @@
 This repository contains the trained models from the paper ... 
 
 ---
-## Directory Structure 
 
-**src** 
-
-**data** 
-
-**notebooks** 
-
-**models** 
+First make sure this repo directory is on the PYTHONPATH, e.g. by running:
+```bash
+$ source shell/add_pwd_to_pythonpath.sh
+```
 
 ## Installation
 
@@ -23,25 +19,34 @@ This repository contains the trained models from the paper ...
 git clone https://github.com/src47/neural-representation-sqw.git
 ```
 
-2) Please pull the appropriate Docker container from Docker Hub.
+2) Install requirements
 
 ```
-docker pull slaclab/slac-ml:20211101.0
+pip install -r requirements.txt
 ```
 
-## Running Examples
+## Directory Structure 
 
-First make sure this repo directory is on the PYTHONPATH, e.g. by running:
+**src** 
+
+**data** 
+
+**notebooks** 
+
+1) test_experimental_data.ipynb: contains code neccesary to optimize the surrogate implict neural model to fit experimental inelastic scattering data.  
+
+2) test_low_counts.ipynb: contains code neccesary to fit experimental data as a function of count rate.
+
+**models** 
+
+## Training Model
+
+To train the SIREN model on simulated excitations from a square lattice, please run:
 ```bash
-$ source shell/add_pwd_to_pythonpath.sh
+$ python3 src/model_training.py --data_path data_simulation_2023/neural_dataset.npz
 ```
 
-And then run:
-```bash
-$ python3 src/....py
-```
-
-**Please direct any questions or comments to chitturi@stanford.edu
+**Please direct any questions or comments to chitturi@stanford.edu, zhurun@stanford.edu, apetsch@stanford.edu, joshuat@slac.stanford.edu. 
 
 
 

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--data_path",
         type=str,
-        default="converted_simulation_data_2023/neural_dataset.npz",
+        default="data_simulation_2023/neural_dataset.npz",
         help="data directory for training",
     )
     argparser.add_argument("--model_path", type=str, default="models/siren", help="filename for trained model")
