@@ -1,6 +1,8 @@
 data_simulation_2023/
 converted_simulation_data_2023/
 neural_representation_env/
+figures/
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
