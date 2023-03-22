@@ -1,8 +1,6 @@
-# Implicit Neural Representation for the dynamical structure factor ... 
+## Magnetic excitations on the spin-1 square lattice: a continuous parameterization using implict neural representations
 
-<img width="500" alt="Screen Shot 2022-12-08 at 2 37 50 PM" src="https://user-images.githubusercontent.com/39596225/206581922-6fd39c22-79bf-417a-a94d-5eec1a705731.png">
-
-This repository contains the trained models from the paper ... 
+<img width="1368" alt="Screen Shot 2023-03-21 at 11 15 28 PM" src="https://user-images.githubusercontent.com/39596225/226817874-f7c4009e-f892-4563-afff-4a8265b3639a.png">
 
 ---
 
