@@ -27,8 +27,6 @@ pip install -r requirements.txt
 
 ## Directory Structure 
 
-**src** 
-
 **data** 
 
 **notebooks** 
