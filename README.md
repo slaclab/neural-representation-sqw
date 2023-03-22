@@ -33,7 +33,9 @@ pip install -r requirements.txt
 
 2) test_low_counts.ipynb: contains code neccesary to fit experimental data as a function of count rate.
 
-**models** 
+**models/siren** 
+
+This directory contains a trained SIREN model which acts as a differentiable surrogate for linear spin wave simulations. 
 
 ## Training Model
 
