@@ -4,11 +4,6 @@
 
 ---
 
-First make sure this repo directory is on the PYTHONPATH, e.g. by running:
-```bash
-$ source shell/add_pwd_to_pythonpath.sh
-```
-
 ## Installation
 
 1) Make a new local folder and clone the repository
@@ -21,6 +16,12 @@ git clone https://github.com/src47/neural-representation-sqw.git
 
 ```
 pip install -r requirements.txt
+```
+
+3) Make sure this repo directory is on the PYTHONPATH:
+
+```bash
+$ source shell/add_pwd_to_pythonpath.sh
 ```
 
 ## Directory Structure 
