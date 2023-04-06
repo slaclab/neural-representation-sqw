@@ -32,7 +32,7 @@ This directory contains experiment S(q,w) measurements for both paths reported i
 
 **data_simulation_2023** 
 
-Due to the size of the simulation dataset, it is not possible to inclue it directly on GitHub. Please download the simulation data which is publicly available at ... zenodo ... 
+Due to the size of the simulation dataset, it is not possible to inclue it directly on GitHub. Please download the simulation data which is publicly available at https://doi.org/10.5281/zenodo.7804447.
 
 **notebooks** 
 
