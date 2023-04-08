@@ -1,4 +1,4 @@
-## Magnetic excitations on the spin-1 square lattice: a continuous parameterization using implict neural representations
+## Capturing dynamical correlations using implicit neural representations
 
 <img width="1368" alt="Screen Shot 2023-03-21 at 11 15 28 PM" src="https://user-images.githubusercontent.com/39596225/226817874-f7c4009e-f892-4563-afff-4a8265b3639a.png">
 
