@@ -51,6 +51,22 @@ To train the SIREN model on simulated excitations from a square lattice, please 
 $ python3 src/model_training.py --data_path data_simulation_2023/neural_dataset.npz
 ```
 
+## Citation
+
+If you found this repository useful in your research, please cite:
+
+```bash
+@article{chitturi2023capturing,
+  title={Capturing dynamical correlations using implicit neural representations},
+  author={Chitturi, Sathya R and Ji, Zhurun and Petsch, Alexander N and Peng, Cheng and Chen, Zhantao and Plumley, Rajan and Dunne, Mike and Mardanya, Sougata and Chowdhury, Sugata and Chen, Hongwei and others},
+  journal={Nature Communications},
+  volume={14},
+  number={1},
+  pages={5852},
+  year={2023},
+  publisher={Nature Publishing Group UK London}
+}
+```
 **Please direct any questions or comments to chitturi@stanford.edu, zhurun@stanford.edu, apetsch@stanford.edu, joshuat@slac.stanford.edu. 
 
 
